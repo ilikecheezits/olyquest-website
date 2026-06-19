@@ -1,15 +1,15 @@
 :root {
-  --bg: #f5f7fb;
+  --bg: #f7f8fb;
   --surface: #ffffff;
-  --surface-2: #eef4ff;
-  --text: #122033;
-  --muted: #5f6d85;
-  --primary: #1d4ed8;
-  --primary-dark: #143caa;
-  --accent: #0f766e;
-  --border: #dde5f0;
-  --shadow: 0 20px 45px rgba(18, 32, 51, 0.08);
-  --radius: 18px;
+  --surface-2: #f5f7fb;
+  --text: #132238;
+  --muted: #5c6b84;
+  --primary: #1f58d7;
+  --primary-dark: #1744b0;
+  --accent: #0b6b6e;
+  --border: #e4e9f2;
+  --shadow: 0 8px 24px rgba(19, 34, 56, 0.06);
+  --radius: 10px;
   --max-width: 1120px;
 }
 
@@ -26,7 +26,7 @@ html {
 body {
   font-family: 'Inter', sans-serif;
   color: var(--text);
-  background: linear-gradient(to bottom, #f9fbff 0%, var(--bg) 100%);
+  background: #f7f8fb;
   line-height: 1.6;
 }
 
@@ -48,8 +48,7 @@ a {
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(12px);
+  background: #fff;
   border-bottom: 1px solid var(--border);
 }
 
@@ -57,7 +56,7 @@ a {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 0;
+  padding: 14px 0;
   gap: 16px;
 }
 
@@ -72,11 +71,12 @@ a {
 .brand-mark {
   display: inline-grid;
   place-items: center;
-  width: 38px;
-  height: 38px;
-  background: linear-gradient(135deg, var(--primary), #5b8cff);
+  width: 36px;
+  height: 36px;
+  background: var(--text);
   color: white;
-  border-radius: 10px;
+  border-radius: 4px;
+  font-size: 0.9rem;
 }
 
 nav {
@@ -95,7 +95,7 @@ nav a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 999px;
+  border-radius: 6px;
   font-weight: 600;
   transition: transform 0.2s ease, background 0.2s ease;
 }
@@ -104,10 +104,11 @@ nav a {
   background: var(--text);
   color: #fff;
   padding: 12px 18px;
+  border: 1px solid var(--text);
 }
 
 .hero {
-  padding: 88px 0 64px;
+  padding: 88px 0 56px;
 }
 
 .hero-grid {
@@ -177,8 +178,8 @@ nav a {
 .hero-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
+  border-radius: 8px;
+  box-shadow: none;
   padding: 22px;
 }
 
@@ -188,16 +189,18 @@ nav a {
 .stats-grid div,
 .approach-cards div,
 .cta-box {
-  border-radius: 16px;
+  border-radius: 8px;
 }
 
 .card-top {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   background: var(--surface-2);
   padding: 12px 14px;
   font-size: 0.9rem;
   color: var(--muted);
+  border: 1px solid var(--border);
 }
 
 .card-main {
@@ -208,8 +211,9 @@ nav a {
 }
 
 .card-main div {
-  background: #f8faff;
+  background: #f9fafc;
   padding: 18px;
+  border: 1px solid var(--border);
 }
 
 .card-main h2 {
@@ -231,8 +235,9 @@ nav a {
   display: flex;
   justify-content: space-between;
   gap: 10px;
-  background: #f9fafc;
+  background: #fff;
   padding: 14px;
+  border-top: 1px solid var(--border);
 }
 
 .stats-section {
@@ -250,6 +255,7 @@ nav a {
   border: 1px solid var(--border);
   padding: 22px;
   text-align: center;
+  box-shadow: none;
 }
 
 .stats-grid strong {
@@ -265,6 +271,7 @@ nav a {
 
 .programs-section,
 .approach-section,
+.team-section,
 .cta-section {
   padding: 64px 0;
 }
@@ -289,8 +296,9 @@ nav a {
 .program-grid article {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: 8px;
   padding: 24px;
+  box-shadow: none;
 }
 
 .program-grid h3 {
@@ -334,16 +342,54 @@ nav a {
   background: var(--surface);
   border: 1px solid var(--border);
   padding: 18px;
+  box-shadow: none;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.team-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.team-avatar {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+
+.team-card h3 {
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+.team-role {
+  font-size: 0.9rem;
+  color: var(--accent);
+  margin-bottom: 10px;
 }
 
 .cta-box {
-  background: linear-gradient(90deg, #0f172a, #153a83);
+  background: linear-gradient(90deg, #102347, #163d88);
   color: #fff;
   padding: 32px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+  border: 1px solid #1d4bb7;
 }
 
 .cta-box .eyebrow {
@@ -366,6 +412,7 @@ nav a {
   .approach-grid,
   .program-grid,
   .stats-grid,
+  .team-grid,
   .cta-box {
     grid-template-columns: 1fr;
   }
