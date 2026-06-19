@@ -23,7 +23,12 @@
           <a href="#results">Results</a>
           <a href="#contact">Contact</a>
         </nav>
-        <a class="nav-button" href="#contact">Book a Consultation</a>
+        <div class="nav-actions">
+          <button class="theme-toggle" id="theme-toggle" aria-label="Toggle color theme">
+            <span class="theme-toggle-icon">☀</span>
+          </button>
+          <a class="nav-button" href="#contact">Book a Consultation</a>
+        </div>
       </div>
     </header>
 
@@ -206,5 +211,28 @@
         <p>STEM Olympiad Tutoring for Curious Learners</p>
       </div>
     </footer>
+
+    <script>
+      const root = document.documentElement;
+      const toggle = document.getElementById('theme-toggle');
+      const icon = toggle.querySelector('.theme-toggle-icon');
+
+      const savedTheme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const defaultTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+
+      function applyTheme(theme) {
+        root.setAttribute('data-theme', theme);
+        icon.textContent = theme === 'dark' ? '☀' : '☾';
+      }
+
+      applyTheme(defaultTheme);
+
+      toggle.addEventListener('click', () => {
+        const nextTheme = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        localStorage.setItem('theme', nextTheme);
+        applyTheme(nextTheme);
+      });
+    </script>
   </body>
 </html>
