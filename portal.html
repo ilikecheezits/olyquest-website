@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OlyQuest | Student Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav-wrap">
+        <a href="index.html" class="brand">
+          <span class="brand-mark">O</span>
+          <span>OlyQuest</span>
+        </a>
+        <nav>
+          <a href="programs.html">Programs</a>
+          <a href="approach.html">Approach</a>
+          <a href="mentors.html">Mentors</a>
+          <a href="portal.html">Student Portal</a>
+          <a href="index.html#contact">Contact</a>
+        </nav>
+        <a class="nav-button" href="index.html#contact">Book a Consultation</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="portal-page">
+        <div class="portal-login-screen" id="portal-login-screen">
+          <div class="portal-login-panel">
+            <p class="eyebrow">STUDENT PORTAL</p>
+            <h1>Welcome back</h1>
+            <p class="page-text">Sign in to view your classes, assignments, and weekly activities.</p>
+            <form class="portal-form" onsubmit="event.preventDefault(); showPortalDashboard();">
+              <label>
+                <span>Email</span>
+                <input type="email" value="student@olyquest.org" />
+              </label>
+              <label>
+                <span>Password</span>
+                <input type="password" value="••••••••" />
+              </label>
+              <button class="button primary" type="submit">Enter</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="portal-dashboard-shell" id="portal-dashboard-shell" hidden>
+          <div class="container portal-dashboard-layout">
+            <aside class="portal-sidebar">
+              <div>
+                <p class="eyebrow small">STUDENT PORTAL</p>
+                <h2>Maya Chen</h2>
+              </div>
+              <div class="sidebar-block">
+                <p>Current track</p>
+                <strong>Competition Prep</strong>
+              </div>
+              <div class="sidebar-block">
+                <p>Next session</p>
+                <strong>Math Seminar · 9:00 AM</strong>
+              </div>
+            </aside>
+
+            <section class="portal-dashboard">
+              <div class="dashboard-top">
+                <div>
+                  <p class="eyebrow">TODAY</p>
+                  <h2>Welcome back, Maya.</h2>
+                </div>
+                <a class="button secondary" href="index.html">Back home</a>
+              </div>
+
+              <div class="dashboard-grid">
+                <section class="portal-panel">
+                  <h3>Virtual class links</h3>
+                  <ul class="portal-list">
+                    <li><span>Math Seminar</span><a href="#">9:00 AM · Join</a></li>
+                    <li><span>Logic Lab</span><a href="#">11:15 AM · Join</a></li>
+                    <li><span>Problem Solving Circle</span><a href="#">3:30 PM · Join</a></li>
+                  </ul>
+                </section>
+                <section class="portal-panel">
+                  <h3>Digital activities</h3>
+                  <ul class="portal-list">
+                    <li><span>Weekly practice set</span><a href="#">Open</a></li>
+                    <li><span>Reflection journal</span><a href="#">Continue</a></li>
+                    <li><span>Mentor feedback notes</span><a href="#">Review</a></li>
+                  </ul>
+                </section>
+              </div>
+            </section>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-wrap">
+        <p>© 2026 OlyQuest</p>
+        <p>Advanced academic training for ambitious learners</p>
+      </div>
+    </footer>
+
+    <script>
+      function showPortalDashboard() {
+        document.getElementById('portal-login-screen').style.display = 'none';
+        document.getElementById('portal-dashboard-shell').hidden = false;
+      }
+    </script>
+  </body>
+</html>
