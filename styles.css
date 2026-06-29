@@ -1152,6 +1152,12 @@ nav a {
   font-family: inherit;
 }
 
+#publicGoogleEmailDisplay {
+  color: var(--text);
+  font-weight: 600;
+  cursor: not-allowed;
+}
+
 .registry-form textarea {
   resize: vertical;
 }

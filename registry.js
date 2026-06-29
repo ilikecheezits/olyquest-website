@@ -1,12 +1,13 @@
 (function () {
   var state = {
     googleClientId: '',
+    verifiedGoogleEmail: '',
   };
 
   var refs = {
     publicRegisterForm: document.getElementById('public-register-form'),
     publicFullName: document.getElementById('publicFullName'),
-    publicGoogleEmail: document.getElementById('publicGoogleEmail'),
+    publicGoogleEmailDisplay: document.getElementById('publicGoogleEmailDisplay'),
     publicRole: document.getElementById('publicRole'),
     publicTrack: document.getElementById('publicTrack'),
     publicMessage: document.getElementById('public-register-message'),
@@ -61,13 +62,13 @@
 
     var payload = {
       fullName: refs.publicFullName.value.trim(),
-      googleEmail: normalizeEmail(refs.publicGoogleEmail.value),
+      googleEmail: normalizeEmail(state.verifiedGoogleEmail),
       role: refs.publicRole.value,
       track: refs.publicTrack.value.trim(),
     };
 
     if (!payload.fullName || !payload.googleEmail || !payload.track) {
-      showPublicMessage('Name, Google email, and track are required.', 'error');
+      showPublicMessage('Name and track are required. Connect a Google account before registering.', 'error');
       return;
     }
 
@@ -106,12 +107,12 @@
 
     verifyGoogleCredential(response.credential)
       .then(function (verified) {
-        refs.publicGoogleEmail.value = normalizeEmail(verified.email);
-        refs.publicGoogleEmail.readOnly = true;
+        state.verifiedGoogleEmail = normalizeEmail(verified.email);
+        refs.publicGoogleEmailDisplay.value = state.verifiedGoogleEmail;
         if (!refs.publicFullName.value && verified.name) {
           refs.publicFullName.value = verified.name;
         }
-        showPublicMessage('Google account verified. Complete the remaining fields and register.', 'success');
+        showPublicMessage('Google account verified. Complete name, role, and track to register.', 'success');
       })
       .catch(function (error) {
         showPublicMessage(error.message || 'Google verification failed.', 'error');
@@ -149,7 +150,8 @@
   function init() {
     refs.publicRegisterForm.addEventListener('submit', submitPublicRegistration);
     refs.publicRegisterForm.addEventListener('reset', function () {
-      refs.publicGoogleEmail.readOnly = false;
+      state.verifiedGoogleEmail = '';
+      refs.publicGoogleEmailDisplay.value = '';
       hidePublicMessage();
     });
     initGoogleRegisterButton();

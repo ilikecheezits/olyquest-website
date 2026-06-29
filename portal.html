@@ -35,20 +35,9 @@
           <div class="portal-login-panel">
             <p class="eyebrow">STUDENT PORTAL</p>
             <h1>Welcome back</h1>
-            <p class="page-text">Sign in to view classes, assignments, and weekly tutoring tasks.</p>
-            <form class="portal-form" onsubmit="event.preventDefault(); showPortalDashboard();">
-              <label>
-                <span>Google Email</span>
-                <input id="portal-email" type="email" value="student@olyquest.org" required />
-              </label>
-              <label>
-                <span>Password</span>
-                <input type="password" value="••••••••" />
-              </label>
-              <button class="button primary" type="submit">Enter</button>
-            </form>
+            <p class="page-text">Sign in with Google to access classes, assignments, and weekly tutoring tasks.</p>
             <div class="portal-google-login">
-              <p>Or continue with Google</p>
+              <p>Add email and password with Google</p>
               <div id="google-portal-login-button"></div>
             </div>
             <p class="portal-login-hint">
@@ -146,15 +135,12 @@
 
       async function showPortalDashboardWithEmail(email) {
         var errorText = document.getElementById('portal-login-error');
-        var submitButton = document.querySelector('.portal-form button[type="submit"]');
-        submitButton.disabled = true;
 
         var user = await findRegistryUserByEmail(email);
 
         if (!user) {
           errorText.textContent = 'No registry match for this Google email yet. Add this account in User Registry first.';
           errorText.hidden = false;
-          submitButton.disabled = false;
           return;
         }
 
@@ -165,12 +151,6 @@
 
         document.getElementById('portal-login-screen').style.display = 'none';
         document.getElementById('portal-dashboard-shell').hidden = false;
-        submitButton.disabled = false;
-      }
-
-      async function showPortalDashboard() {
-        var emailInput = document.getElementById('portal-email');
-        await showPortalDashboardWithEmail(emailInput.value);
       }
 
       async function verifyGoogleCredential(credential) {
@@ -220,8 +200,6 @@
               errorText.hidden = false;
               return;
             }
-
-            document.getElementById('portal-email').value = verified.email;
             await showPortalDashboardWithEmail(verified.email);
           },
         });
