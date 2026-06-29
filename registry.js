@@ -7,9 +7,7 @@
   var refs = {
     publicRegisterForm: document.getElementById('public-register-form'),
     publicFullName: document.getElementById('publicFullName'),
-    publicGoogleEmailDisplay: document.getElementById('publicGoogleEmailDisplay'),
     publicRole: document.getElementById('publicRole'),
-    publicTrack: document.getElementById('publicTrack'),
     publicMessage: document.getElementById('public-register-message'),
     googleRegisterButton: document.getElementById('google-register-button'),
   };
@@ -64,11 +62,11 @@
       fullName: refs.publicFullName.value.trim(),
       googleEmail: normalizeEmail(state.verifiedGoogleEmail),
       role: refs.publicRole.value,
-      track: refs.publicTrack.value.trim(),
+      track: '',
     };
 
-    if (!payload.fullName || !payload.googleEmail || !payload.track) {
-      showPublicMessage('Name and track are required. Connect a Google account before registering.', 'error');
+    if (!payload.fullName || !payload.googleEmail) {
+      showPublicMessage('Name is required. Connect a Google account before registering.', 'error');
       return;
     }
 
@@ -108,11 +106,10 @@
     verifyGoogleCredential(response.credential)
       .then(function (verified) {
         state.verifiedGoogleEmail = normalizeEmail(verified.email);
-        refs.publicGoogleEmailDisplay.value = state.verifiedGoogleEmail;
         if (!refs.publicFullName.value && verified.name) {
           refs.publicFullName.value = verified.name;
         }
-        showPublicMessage('Google account verified. Complete name, role, and track to register.', 'success');
+        showPublicMessage('Google account verified. Complete name and role to register.', 'success');
       })
       .catch(function (error) {
         showPublicMessage(error.message || 'Google verification failed.', 'error');
@@ -151,7 +148,6 @@
     refs.publicRegisterForm.addEventListener('submit', submitPublicRegistration);
     refs.publicRegisterForm.addEventListener('reset', function () {
       state.verifiedGoogleEmail = '';
-      refs.publicGoogleEmailDisplay.value = '';
       hidePublicMessage();
     });
     initGoogleRegisterButton();

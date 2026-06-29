@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>OlyQuest | User Registry</title>
+    <title>OlyQuest | Registration</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -22,7 +22,7 @@
           <a href="approach.html">Approach</a>
           <a href="mentors.html">Mentors</a>
           <a href="portal.html">Student Portal</a>
-          <a href="registry.html">Registry</a>
+          <a href="registry.html">Registration</a>
           <a href="signup.html">Sign Up</a>
         </nav>
         <a class="nav-button" href="signup.html">Sign Up</a>
@@ -33,10 +33,10 @@
       <section class="page-section">
         <div class="container registry-layout">
           <div class="page-intro">
-            <p class="eyebrow">USER REGISTRY</p>
-            <h1>Google email account registry</h1>
+            <p class="eyebrow">REGISTRATION</p>
+            <h1>Google account registration</h1>
             <p>
-              Register student and parent website accounts using Google email. The full user list is admin-only.
+              Register student and parent website accounts using Google sign-in.
             </p>
           </div>
 
@@ -48,19 +48,11 @@
                 <input id="publicFullName" type="text" required />
               </label>
               <label>
-                <span>Google account email</span>
-                <input id="publicGoogleEmailDisplay" type="text" placeholder="Connect Google account first" readonly />
-              </label>
-              <label>
                 <span>Role</span>
                 <select id="publicRole">
                   <option value="Student">Student</option>
                   <option value="Parent">Parent</option>
                 </select>
-              </label>
-              <label>
-                <span>Track</span>
-                <input id="publicTrack" type="text" placeholder="Competition Prep" required />
               </label>
               <div class="registry-google-area">
                 <p>Add email and password with Google:</p>
@@ -74,11 +66,6 @@
             <p id="public-register-message" class="registry-message" hidden></p>
           </section>
 
-          <section class="registry-card">
-            <h2>Admin tools moved</h2>
-            <p class="registry-footnote">The full user list and account management are now on a separate admin page.</p>
-            <a class="button secondary" href="registry-admin.html">Open Admin Registry</a>
-          </section>
         </div>
       </section>
 
