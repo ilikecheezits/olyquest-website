@@ -1018,6 +1018,11 @@ nav a {
   font-weight: 600;
 }
 
+.portal-empty {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
 .mentor-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
