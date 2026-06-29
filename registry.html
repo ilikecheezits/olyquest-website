@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OlyQuest | User Registry</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav-wrap">
+        <a href="index.html" class="brand">
+          <span class="brand-mark">O</span>
+          <span>OlyQuest</span>
+        </a>
+        <nav>
+          <a href="index.html">Home</a>
+          <a href="programs.html">Programs</a>
+          <a href="approach.html">Approach</a>
+          <a href="mentors.html">Mentors</a>
+          <a href="portal.html">Student Portal</a>
+          <a href="registry.html">Registry</a>
+          <a href="signup.html">Sign Up</a>
+        </nav>
+        <a class="nav-button" href="signup.html">Sign Up</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="page-section">
+        <div class="container registry-layout">
+          <div class="page-intro">
+            <p class="eyebrow">USER REGISTRY</p>
+            <h1>Offline account registry (Google email based)</h1>
+            <p>
+              Use this page to register users before deployment. Data is stored in your browser on this device and linked by Google email.
+            </p>
+          </div>
+
+          <section class="registry-card">
+            <h2>Add or update account</h2>
+            <form id="registry-form" class="registry-form" autocomplete="off">
+              <label>
+                <span>Full name</span>
+                <input id="fullName" type="text" required />
+              </label>
+              <label>
+                <span>Google email</span>
+                <input id="googleEmail" type="email" placeholder="student@gmail.com" required />
+              </label>
+              <label>
+                <span>Role</span>
+                <select id="role">
+                  <option value="Student">Student</option>
+                  <option value="Parent">Parent</option>
+                  <option value="Mentor">Mentor</option>
+                  <option value="Admin">Admin</option>
+                </select>
+              </label>
+              <label>
+                <span>Track</span>
+                <input id="track" type="text" placeholder="Competition Prep" />
+              </label>
+              <label class="registry-notes-field">
+                <span>Notes</span>
+                <textarea id="notes" rows="3" placeholder="Optional notes"></textarea>
+              </label>
+              <div class="registry-form-actions">
+                <button class="button primary" type="submit" id="saveUserBtn">Save Account</button>
+                <button class="button secondary" type="button" id="resetFormBtn">Reset</button>
+              </div>
+            </form>
+            <p id="registry-message" class="registry-message" hidden></p>
+          </section>
+
+          <section class="registry-card">
+            <div class="registry-toolbar">
+              <input id="searchInput" type="search" placeholder="Search by name, email, role, track" />
+              <div class="registry-toolbar-actions">
+                <button class="button secondary" id="exportBtn" type="button">Export JSON</button>
+                <label class="button secondary registry-import-label" for="importInput">Import JSON</label>
+                <input id="importInput" type="file" accept="application/json" />
+                <button class="button secondary" id="clearBtn" type="button">Clear All</button>
+              </div>
+            </div>
+
+            <div class="registry-table-wrap">
+              <table class="registry-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Google Email</th>
+                    <th>Role</th>
+                    <th>Track</th>
+                    <th>Updated</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="registry-table-body"></tbody>
+              </table>
+            </div>
+            <p class="registry-footnote">Tip: export JSON regularly so you can migrate users when your backend is ready.</p>
+          </section>
+        </div>
+      </section>
+
+      <section class="cta-section">
+        <div class="container cta-box">
+          <div>
+            <p class="eyebrow">NEED HELP?</p>
+            <h2>Got any questions? Contact us.</h2>
+          </div>
+          <a class="button secondary" href="mailto:hello@olyquest.org">Contact us</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-wrap">
+        <p>© 2026 OlyQuest</p>
+        <p>Advanced academic training for ambitious learners</p>
+      </div>
+    </footer>
+
+    <script src="registry.js"></script>
+  </body>
+</html>

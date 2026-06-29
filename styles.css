@@ -901,6 +901,24 @@ nav a {
   color: var(--text);
 }
 
+.portal-login-hint {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.portal-login-hint a {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.portal-login-error {
+  margin-top: 8px;
+  color: #b42318;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
 .portal-dashboard-shell {
   padding: 48px 0;
 }
@@ -1072,6 +1090,170 @@ nav a {
   border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
+.registry-layout {
+  display: grid;
+  gap: 18px;
+}
+
+.registry-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px;
+}
+
+.registry-card h2 {
+  font-size: 1.2rem;
+  margin-bottom: 14px;
+}
+
+.registry-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.registry-form label {
+  display: grid;
+  gap: 6px;
+}
+
+.registry-notes-field,
+.registry-form-actions {
+  grid-column: 1 / -1;
+}
+
+.registry-form span {
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.registry-form input,
+.registry-form select,
+.registry-form textarea,
+.registry-toolbar input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+  color: var(--text);
+  font-family: inherit;
+}
+
+.registry-form textarea {
+  resize: vertical;
+}
+
+.registry-form-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.registry-message {
+  margin-top: 12px;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.registry-message.success {
+  color: #127a42;
+}
+
+.registry-message.error {
+  color: #b42318;
+}
+
+.registry-message.info {
+  color: var(--muted);
+}
+
+.registry-toolbar {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.registry-toolbar-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.registry-import-label {
+  cursor: pointer;
+}
+
+#importInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.registry-table-wrap {
+  overflow-x: auto;
+}
+
+.registry-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 780px;
+}
+
+.registry-table th,
+.registry-table td {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.registry-table th {
+  color: var(--muted);
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.registry-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.registry-row-btn {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-alt);
+  color: var(--text);
+  font-size: 0.84rem;
+  font-weight: 600;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.registry-row-btn.danger {
+  color: #b42318;
+}
+
+.registry-empty {
+  color: var(--muted);
+  text-align: center;
+}
+
+.registry-footnote {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
 .site-footer {
   padding: 22px 0 40px;
 }
@@ -1156,5 +1338,14 @@ nav a {
 
   .signup-embed-card iframe {
     min-height: 760px;
+  }
+
+  .registry-form {
+    grid-template-columns: 1fr;
+  }
+
+  .registry-form-actions {
+    flex-direction: column;
+    align-items: stretch;
   }
 }

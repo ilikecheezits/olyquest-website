@@ -22,6 +22,7 @@
           <a href="approach.html">Approach</a>
           <a href="mentors.html">Mentors</a>
           <a href="portal.html">Student Portal</a>
+          <a href="registry.html">Registry</a>
           <a href="signup.html">Sign Up</a>
         </nav>
         <a class="nav-button" href="signup.html">Sign Up</a>
@@ -37,8 +38,8 @@
             <p class="page-text">Sign in to view classes, assignments, and weekly tutoring tasks.</p>
             <form class="portal-form" onsubmit="event.preventDefault(); showPortalDashboard();">
               <label>
-                <span>Email</span>
-                <input type="email" value="student@olyquest.org" />
+                <span>Google Email</span>
+                <input id="portal-email" type="email" value="student@olyquest.org" required />
               </label>
               <label>
                 <span>Password</span>
@@ -46,6 +47,12 @@
               </label>
               <button class="button primary" type="submit">Enter</button>
             </form>
+            <p class="portal-login-hint">
+              New student or parent? Add them in
+              <a href="registry.html">User Registry</a>
+              first.
+            </p>
+            <p class="portal-login-error" id="portal-login-error" hidden></p>
           </div>
         </div>
 
@@ -54,11 +61,11 @@
             <aside class="portal-sidebar">
               <div>
                 <p class="eyebrow small">STUDENT PORTAL</p>
-                <h2>Maya Chen</h2>
+                <h2 id="portal-student-name">Maya Chen</h2>
               </div>
               <div class="sidebar-block">
                 <p>Current track</p>
-                <strong>Competition Prep</strong>
+                <strong id="portal-current-track">Competition Prep</strong>
               </div>
               <div class="sidebar-block">
                 <p>Next session</p>
@@ -70,7 +77,7 @@
               <div class="dashboard-top">
                 <div>
                   <p class="eyebrow">TODAY</p>
-                  <h2>Welcome back, Maya.</h2>
+                  <h2 id="portal-welcome-heading">Welcome back, Maya.</h2>
                 </div>
                 <a class="button secondary" href="index.html">Back home</a>
               </div>
@@ -117,7 +124,40 @@
     </footer>
 
     <script>
+      function getRegistryUsers() {
+        try {
+          var raw = localStorage.getItem('olyquest.registry.v1');
+          if (!raw) return [];
+          var parsed = JSON.parse(raw);
+          return Array.isArray(parsed.users) ? parsed.users : [];
+        } catch (error) {
+          return [];
+        }
+      }
+
+      function findRegistryUserByEmail(email) {
+        var normalizedEmail = String(email || '').trim().toLowerCase();
+        return getRegistryUsers().find(function (user) {
+          return String(user.googleEmail || '').trim().toLowerCase() === normalizedEmail;
+        });
+      }
+
       function showPortalDashboard() {
+        var emailInput = document.getElementById('portal-email');
+        var errorText = document.getElementById('portal-login-error');
+        var user = findRegistryUserByEmail(emailInput.value);
+
+        if (!user) {
+          errorText.textContent = 'No registry match for this Google email yet. Add this account in User Registry first.';
+          errorText.hidden = false;
+          return;
+        }
+
+        errorText.hidden = true;
+        document.getElementById('portal-student-name').textContent = user.fullName;
+        document.getElementById('portal-welcome-heading').textContent = 'Welcome back, ' + user.fullName + '.';
+        document.getElementById('portal-current-track').textContent = user.track || 'General Tutoring';
+
         document.getElementById('portal-login-screen').style.display = 'none';
         document.getElementById('portal-dashboard-shell').hidden = false;
       }
