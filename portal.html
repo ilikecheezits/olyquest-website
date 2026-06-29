@@ -47,6 +47,10 @@
               </label>
               <button class="button primary" type="submit">Enter</button>
             </form>
+            <div class="portal-google-login">
+              <p>Or continue with Google</p>
+              <div id="google-portal-login-button"></div>
+            </div>
             <p class="portal-login-hint">
               New student or parent? Add them in
               <a href="registry.html">User Registry</a>
@@ -123,6 +127,7 @@
       </div>
     </footer>
 
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script>
       async function findRegistryUserByEmail(email) {
         var response = await fetch('/api/registry-login', {
@@ -139,13 +144,12 @@
         return payload && payload.ok ? payload.user : null;
       }
 
-      async function showPortalDashboard() {
-        var emailInput = document.getElementById('portal-email');
+      async function showPortalDashboardWithEmail(email) {
         var errorText = document.getElementById('portal-login-error');
         var submitButton = document.querySelector('.portal-form button[type="submit"]');
         submitButton.disabled = true;
 
-        var user = await findRegistryUserByEmail(emailInput.value);
+        var user = await findRegistryUserByEmail(email);
 
         if (!user) {
           errorText.textContent = 'No registry match for this Google email yet. Add this account in User Registry first.';
@@ -163,6 +167,77 @@
         document.getElementById('portal-dashboard-shell').hidden = false;
         submitButton.disabled = false;
       }
+
+      async function showPortalDashboard() {
+        var emailInput = document.getElementById('portal-email');
+        await showPortalDashboardWithEmail(emailInput.value);
+      }
+
+      async function verifyGoogleCredential(credential) {
+        var response = await fetch('/api/google-verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ credential: credential }),
+        });
+
+        if (!response.ok) {
+          return null;
+        }
+
+        var payload = await response.json();
+        return payload && payload.ok ? payload : null;
+      }
+
+      var googlePortalInitAttempts = 0;
+
+      async function initGooglePortalLogin() {
+        if (!window.google || !window.google.accounts || !window.google.accounts.id) {
+          googlePortalInitAttempts += 1;
+          if (googlePortalInitAttempts < 15) {
+            setTimeout(initGooglePortalLogin, 250);
+          }
+          return;
+        }
+
+        var configResponse = await fetch('/api/google-config');
+        if (!configResponse.ok) return;
+        var configPayload = await configResponse.json();
+        if (!configPayload.enabled || !configPayload.clientId) return;
+
+        window.google.accounts.id.initialize({
+          client_id: configPayload.clientId,
+          callback: async function (response) {
+            var errorText = document.getElementById('portal-login-error');
+            if (!response || !response.credential) {
+              errorText.textContent = 'Google login did not return a credential.';
+              errorText.hidden = false;
+              return;
+            }
+
+            var verified = await verifyGoogleCredential(response.credential);
+            if (!verified || !verified.email) {
+              errorText.textContent = 'Google account verification failed.';
+              errorText.hidden = false;
+              return;
+            }
+
+            document.getElementById('portal-email').value = verified.email;
+            await showPortalDashboardWithEmail(verified.email);
+          },
+        });
+
+        window.google.accounts.id.renderButton(
+          document.getElementById('google-portal-login-button'),
+          {
+            theme: 'outline',
+            size: 'large',
+            text: 'continue_with',
+            shape: 'rectangular',
+          }
+        );
+      }
+
+      initGooglePortalLogin();
     </script>
   </body>
 </html>

@@ -6,7 +6,8 @@ This project now includes a server-backed registry for deployed usage on Vercel.
 
 ### Pages
 
-- `registry.html`: Public Google-email registration form and admin-only registry management panel.
+- `registry.html`: Public registration page with Google account popup verification option.
+- `registry-admin.html`: Admin-only registry list and management page (requires admin key).
 - `portal.html`: Login checks the remote registry via API.
 
 ### Vercel Setup (Required)
@@ -16,6 +17,7 @@ This project now includes a server-backed registry for deployed usage on Vercel.
 	- `KV_REST_API_URL`
 	- `KV_REST_API_TOKEN`
 	- `REGISTRY_ADMIN_KEY` (your private admin password)
+	- `GOOGLE_CLIENT_ID` (from Google Cloud OAuth web app)
 3. Redeploy.
 
 ### How It Works
@@ -23,6 +25,7 @@ This project now includes a server-backed registry for deployed usage on Vercel.
 - Registry data is stored remotely in Vercel KV (`olyquest:registry:users`).
 - Full user list endpoints are admin-key protected.
 - Public registration can add accounts, but cannot read full registry data.
+- Google popup account verification is supported via API-backed token verification.
 - Each account stores:
 	- full name
 	- google email (unique key)
@@ -34,7 +37,8 @@ This project now includes a server-backed registry for deployed usage on Vercel.
 ### Using It
 
 1. Open `registry.html` to self-register a user by Google email.
-2. For full registry view/edit, enter `REGISTRY_ADMIN_KEY` in the admin section.
+2. Optionally click Google popup login to pre-fill and verify email.
+3. Open `registry-admin.html` for full registry view/edit with `REGISTRY_ADMIN_KEY`.
 3. Open `portal.html` and sign in with a registered email.
 4. (Admin) Use Export/Import JSON for backup and migration workflows.
 
