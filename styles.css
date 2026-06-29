@@ -1179,6 +1179,28 @@ nav a {
   margin-bottom: 14px;
 }
 
+.registry-admin-auth {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.registry-admin-auth input {
+  flex: 1 1 260px;
+  min-width: 220px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+  color: var(--text);
+}
+
+.registry-admin-panel {
+  margin-top: 4px;
+}
+
 .registry-toolbar-actions {
   display: flex;
   gap: 10px;
@@ -1345,6 +1367,11 @@ nav a {
   }
 
   .registry-form-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .registry-admin-auth {
     flex-direction: column;
     align-items: stretch;
   }

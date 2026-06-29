@@ -124,32 +124,33 @@
     </footer>
 
     <script>
-      function getRegistryUsers() {
-        try {
-          var raw = localStorage.getItem('olyquest.registry.v1');
-          if (!raw) return [];
-          var parsed = JSON.parse(raw);
-          return Array.isArray(parsed.users) ? parsed.users : [];
-        } catch (error) {
-          return [];
-        }
-      }
-
-      function findRegistryUserByEmail(email) {
-        var normalizedEmail = String(email || '').trim().toLowerCase();
-        return getRegistryUsers().find(function (user) {
-          return String(user.googleEmail || '').trim().toLowerCase() === normalizedEmail;
+      async function findRegistryUserByEmail(email) {
+        var response = await fetch('/api/registry-login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email }),
         });
+
+        if (!response.ok) {
+          return null;
+        }
+
+        var payload = await response.json();
+        return payload && payload.ok ? payload.user : null;
       }
 
-      function showPortalDashboard() {
+      async function showPortalDashboard() {
         var emailInput = document.getElementById('portal-email');
         var errorText = document.getElementById('portal-login-error');
-        var user = findRegistryUserByEmail(emailInput.value);
+        var submitButton = document.querySelector('.portal-form button[type="submit"]');
+        submitButton.disabled = true;
+
+        var user = await findRegistryUserByEmail(emailInput.value);
 
         if (!user) {
           errorText.textContent = 'No registry match for this Google email yet. Add this account in User Registry first.';
           errorText.hidden = false;
+          submitButton.disabled = false;
           return;
         }
 
@@ -160,6 +161,7 @@
 
         document.getElementById('portal-login-screen').style.display = 'none';
         document.getElementById('portal-dashboard-shell').hidden = false;
+        submitButton.disabled = false;
       }
     </script>
   </body>

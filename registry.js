@@ -1,12 +1,25 @@
 (function () {
-  var STORAGE_KEY = 'olyquest.registry.v1';
+  var ADMIN_SESSION_KEY = 'olyquest.registry.adminkey';
 
   var state = {
-    users: [],
+    var ADMIN_SESSION_KEY = 'olyquest.registry.adminkey';
     editingEmail: null,
+    adminKey: sessionStorage.getItem(ADMIN_SESSION_KEY) || '',
   };
 
+      adminKey: sessionStorage.getItem(ADMIN_SESSION_KEY) || '',
   var refs = {
+    publicRegisterForm: document.getElementById('public-register-form'),
+    publicFullName: document.getElementById('publicFullName'),
+    publicGoogleEmail: document.getElementById('publicGoogleEmail'),
+    publicRole: document.getElementById('publicRole'),
+    publicTrack: document.getElementById('publicTrack'),
+    publicMessage: document.getElementById('public-register-message'),
+    adminAuthForm: document.getElementById('admin-auth-form'),
+      publicMessage: document.getElementById('public-register-message'),
+    adminKeyInput: document.getElementById('adminKeyInput'),
+    logoutAdminBtn: document.getElementById('logoutAdminBtn'),
+    adminPanel: document.getElementById('admin-registry-panel'),
     form: document.getElementById('registry-form'),
     fullName: document.getElementById('fullName'),
     googleEmail: document.getElementById('googleEmail'),
@@ -33,38 +46,53 @@
     refs.message.hidden = false;
   }
 
+  function showPublicMessage(text, tone) {
+    refs.publicMessage.textContent = text;
+    refs.publicMessage.className = 'registry-message ' + (tone || 'info');
+    refs.publicMessage.hidden = false;
+  }
+
   function hideMessage() {
     refs.message.hidden = true;
   }
 
-  function loadState() {
-    try {
-      var raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) {
-        state.users = [];
-        return;
-      }
-
-      var parsed = JSON.parse(raw);
-      if (parsed && Array.isArray(parsed.users)) {
-        state.users = parsed.users;
-      } else {
-        state.users = [];
-      }
-    } catch (error) {
-      state.users = [];
-      showMessage('Registry data could not be read. Starting with an empty list.', 'error');
-    }
+  function hidePublicMessage() {
+    refs.publicMessage.hidden = true;
   }
 
-  function saveState() {
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({
-        version: 1,
-        users: state.users,
-      })
-    );
+  async function apiFetch(url, options, requiresAdmin) {
+    var config = options || {};
+    var headers = config.headers || {};
+
+    if (requiresAdmin) {
+      if (!state.adminKey) {
+        throw new Error('Admin key required.');
+      }
+      headers['x-admin-key'] = state.adminKey;
+    }
+
+    if (config.body && !headers['Content-Type']) {
+      headers['Content-Type'] = 'application/json';
+    }
+
+    var response = await fetch(url, {
+      method: config.method || 'GET',
+      headers: headers,
+      body: config.body,
+    });
+
+    var data = {};
+    try {
+      data = await response.json();
+    } catch (error) {
+      data = { ok: false, error: 'Invalid server response.' };
+    }
+
+    if (!response.ok) {
+      throw new Error(data.error || data.message || 'Request failed.');
+    }
+
+    return data;
   }
 
   function getFormData() {
@@ -106,7 +134,7 @@
 
     if (!users.length) {
       refs.tableBody.innerHTML =
-        '<tr><td colspan="6" class="registry-empty">No users yet. Add your first account above.</td></tr>';
+        '<tr><td colspan="6" class="registry-empty">No users yet.</td></tr>';
       return;
     }
 
@@ -142,7 +170,79 @@
       .replace(/'/g, '&#039;');
   }
 
-  function upsertUser(event) {
+  async function loadUsers() {
+    var payload = await apiFetch('/api/registry-users', { method: 'GET' }, true);
+    state.users = Array.isArray(payload.users) ? payload.users : [];
+    renderTable();
+  }
+
+  async function unlockAdmin(event) {
+    event.preventDefault();
+    hideMessage();
+
+    state.adminKey = refs.adminKeyInput.value.trim();
+    if (!state.adminKey) {
+      showMessage('Enter an admin key.', 'error');
+      return;
+    }
+
+    try {
+      await apiFetch('/api/registry-auth', { method: 'POST' }, true);
+      sessionStorage.setItem(ADMIN_SESSION_KEY, state.adminKey);
+      refs.adminPanel.hidden = false;
+      await loadUsers();
+      showMessage('Admin access granted.', 'success');
+    } catch (error) {
+      state.adminKey = '';
+      sessionStorage.removeItem(ADMIN_SESSION_KEY);
+      refs.adminPanel.hidden = true;
+      showMessage(error.message || 'Admin unlock failed.', 'error');
+    }
+  }
+
+  function lockAdmin() {
+    state.adminKey = '';
+    sessionStorage.removeItem(ADMIN_SESSION_KEY);
+    refs.adminPanel.hidden = true;
+    state.users = [];
+    renderTable();
+    showMessage('Registry locked.', 'info');
+  }
+
+  async function submitPublicRegistration(event) {
+    event.preventDefault();
+    hidePublicMessage();
+
+    var payload = {
+      fullName: refs.publicFullName.value.trim(),
+      googleEmail: normalizeEmail(refs.publicGoogleEmail.value),
+      role: refs.publicRole.value,
+      track: refs.publicTrack.value.trim(),
+    };
+
+    if (!payload.fullName || !payload.googleEmail) {
+      showPublicMessage('Name and Google email are required.', 'error');
+      return;
+    }
+
+    try {
+      var result = await apiFetch('/api/registry-register', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+
+      if (result.status === 'exists') {
+        showPublicMessage('This email is already registered.', 'info');
+      } else {
+        refs.publicRegisterForm.reset();
+        showPublicMessage('Registration submitted. You can now log in using that Google email.', 'success');
+      }
+    } catch (error) {
+      showPublicMessage(error.message || 'Registration failed.', 'error');
+    }
+  }
+
+  async function upsertUser(event) {
     event.preventDefault();
     hideMessage();
 
@@ -153,64 +253,25 @@
       return;
     }
 
-    var existingEmailIndex = state.users.findIndex(function (user) {
-      return normalizeEmail(user.googleEmail) === formData.googleEmail;
-    });
+    try {
+      await apiFetch(
+        '/api/registry-users',
+        {
+          method: 'POST',
+          body: JSON.stringify({ user: formData }),
+        },
+        true
+      );
 
-    if (state.editingEmail) {
-      var editingIndex = state.users.findIndex(function (user) {
-        return normalizeEmail(user.googleEmail) === state.editingEmail;
-      });
-
-      if (editingIndex === -1) {
-        showMessage('Could not find the account being edited.', 'error');
-        return;
-      }
-
-      if (existingEmailIndex !== -1 && existingEmailIndex !== editingIndex) {
-        showMessage('Another account already uses that Google email.', 'error');
-        return;
-      }
-
-      state.users[editingIndex] = {
-        fullName: formData.fullName,
-        googleEmail: formData.googleEmail,
-        role: formData.role,
-        track: formData.track,
-        notes: formData.notes,
-        createdAt: state.users[editingIndex].createdAt,
-        updatedAt: new Date().toISOString(),
-      };
-
-      saveState();
-      renderTable();
+      await loadUsers();
       resetForm();
-      showMessage('Account updated.', 'success');
-      return;
+      showMessage('Account saved.', 'success');
+    } catch (error) {
+      showMessage(error.message || 'Save failed.', 'error');
     }
-
-    if (existingEmailIndex !== -1) {
-      showMessage('That Google email is already registered.', 'error');
-      return;
-    }
-
-    state.users.unshift({
-      fullName: formData.fullName,
-      googleEmail: formData.googleEmail,
-      role: formData.role,
-      track: formData.track,
-      notes: formData.notes,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    });
-
-    saveState();
-    renderTable();
-    resetForm();
-    showMessage('Account saved.', 'success');
   }
 
-  function handleTableClick(event) {
+  async function handleTableClick(event) {
     var actionButton = event.target.closest('button[data-action]');
     if (!actionButton) return;
 
@@ -239,18 +300,27 @@
     if (action === 'delete') {
       if (!window.confirm('Delete this account?')) return;
 
-      state.users = state.users.filter(function (user) {
-        return normalizeEmail(user.googleEmail) !== email;
-      });
-      saveState();
-      renderTable();
-      showMessage('Account deleted.', 'info');
+      try {
+        await apiFetch(
+          '/api/registry-delete',
+          {
+            method: 'POST',
+            body: JSON.stringify({ email: email }),
+          },
+          true
+        );
+
+        await loadUsers();
+        showMessage('Account deleted.', 'info');
+      } catch (error) {
+        showMessage(error.message || 'Delete failed.', 'error');
+      }
     }
   }
 
   function exportRegistry() {
     var payload = {
-      version: 1,
+      version: 2,
       exportedAt: new Date().toISOString(),
       users: state.users,
     };
@@ -273,42 +343,27 @@
     if (!file) return;
 
     var reader = new FileReader();
-    reader.onload = function () {
+    reader.onload = async function () {
       try {
         var parsed = JSON.parse(reader.result);
         if (!parsed || !Array.isArray(parsed.users)) {
           throw new Error('Invalid format');
         }
 
-        var seen = {};
-        var users = parsed.users
-          .map(function (user) {
-            var email = normalizeEmail(user.googleEmail);
-            if (!email || seen[email]) return null;
-            seen[email] = true;
+        await apiFetch(
+          '/api/registry-replace',
+          {
+            method: 'POST',
+            body: JSON.stringify({ users: parsed.users }),
+          },
+          true
+        );
 
-            return {
-              fullName: String(user.fullName || '').trim(),
-              googleEmail: email,
-              role: String(user.role || 'Student').trim() || 'Student',
-              track: String(user.track || '').trim(),
-              notes: String(user.notes || '').trim(),
-              createdAt: user.createdAt || new Date().toISOString(),
-              updatedAt: user.updatedAt || new Date().toISOString(),
-            };
-          })
-          .filter(Boolean)
-          .filter(function (user) {
-            return user.fullName && user.googleEmail;
-          });
-
-        state.users = users;
-        saveState();
-        renderTable();
+        await loadUsers();
         resetForm();
         showMessage('Registry imported successfully.', 'success');
       } catch (error) {
-        showMessage('Import failed. Please use a valid registry JSON file.', 'error');
+        showMessage(error.message || 'Import failed. Please use a valid registry JSON file.', 'error');
       }
 
       refs.importInput.value = '';
@@ -317,20 +372,49 @@
     reader.readAsText(file);
   }
 
-  function clearRegistry() {
-    if (!window.confirm('Clear all accounts from this browser?')) return;
+  async function clearRegistry() {
+    if (!window.confirm('Clear all accounts from remote registry?')) return;
 
-    state.users = [];
-    saveState();
-    renderTable();
-    resetForm();
-    showMessage('All accounts cleared.', 'info');
+    try {
+      await apiFetch(
+        '/api/registry-replace',
+        {
+          method: 'POST',
+          body: JSON.stringify({ users: [] }),
+        },
+        true
+      );
+      await loadUsers();
+      resetForm();
+      showMessage('All accounts cleared.', 'info');
+    } catch (error) {
+      showMessage(error.message || 'Clear failed.', 'error');
+    }
+  }
+
+  async function initAdminFromSession() {
+    if (!state.adminKey) {
+      renderTable();
+      return;
+    }
+
+    refs.adminKeyInput.value = state.adminKey;
+    try {
+      await apiFetch('/api/registry-auth', { method: 'POST' }, true);
+      refs.adminPanel.hidden = false;
+      await loadUsers();
+      showMessage('Admin session restored.', 'info');
+    } catch (error) {
+      lockAdmin();
+    }
   }
 
   function init() {
-    loadState();
     renderTable();
 
+    refs.publicRegisterForm.addEventListener('submit', submitPublicRegistration);
+    refs.adminAuthForm.addEventListener('submit', unlockAdmin);
+    refs.logoutAdminBtn.addEventListener('click', lockAdmin);
     refs.form.addEventListener('submit', upsertUser);
     refs.resetFormBtn.addEventListener('click', function () {
       resetForm();
@@ -341,6 +425,8 @@
     refs.exportBtn.addEventListener('click', exportRegistry);
     refs.importInput.addEventListener('change', importRegistryFile);
     refs.clearBtn.addEventListener('click', clearRegistry);
+
+    initAdminFromSession();
   }
 
   init();

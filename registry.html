@@ -34,13 +34,64 @@
         <div class="container registry-layout">
           <div class="page-intro">
             <p class="eyebrow">USER REGISTRY</p>
-            <h1>Offline account registry (Google email based)</h1>
+            <h1>Google email account registry</h1>
             <p>
-              Use this page to register users before deployment. Data is stored in your browser on this device and linked by Google email.
+              Register student and parent website accounts using Google email. The full user list is admin-only.
             </p>
           </div>
 
           <section class="registry-card">
+            <h2>Register account</h2>
+            <form id="public-register-form" class="registry-form" autocomplete="off">
+              <label>
+                <span>Student or parent name</span>
+                <input id="publicFullName" type="text" required />
+              </label>
+              <label>
+                <span>Google email</span>
+                <input id="publicGoogleEmail" type="email" placeholder="student@gmail.com" required />
+              </label>
+              <label>
+                <span>Role</span>
+                <select id="publicRole">
+                  <option value="Student">Student</option>
+                  <option value="Parent">Parent</option>
+                </select>
+              </label>
+              <label>
+                <span>Track</span>
+                <input id="publicTrack" type="text" placeholder="Competition Prep" />
+              </label>
+              <div class="registry-form-actions">
+                <button class="button primary" type="submit">Register Account</button>
+                <button class="button secondary" type="reset">Reset</button>
+              </div>
+            </form>
+            <p id="public-register-message" class="registry-message" hidden></p>
+          </section>
+
+          <section class="registry-card">
+            <h2>Admin access</h2>
+            <p class="registry-footnote">Use your admin key to view and manage the full registry list.</p>
+            <form id="admin-auth-form" class="registry-admin-auth" autocomplete="off">
+              <input id="adminKeyInput" type="password" placeholder="Enter admin key" required />
+              <button class="button primary" type="submit">Unlock Registry</button>
+              <button class="button secondary" id="logoutAdminBtn" type="button">Lock</button>
+            </form>
+            <p id="registry-message" class="registry-message" hidden></p>
+          </section>
+
+          <section class="registry-card registry-admin-panel" id="admin-registry-panel" hidden>
+            <div class="registry-toolbar">
+              <input id="searchInput" type="search" placeholder="Search by name, email, role, track" />
+              <div class="registry-toolbar-actions">
+                <button class="button secondary" id="exportBtn" type="button">Export JSON</button>
+                <label class="button secondary registry-import-label" for="importInput">Import JSON</label>
+                <input id="importInput" type="file" accept="application/json" />
+                <button class="button secondary" id="clearBtn" type="button">Clear All</button>
+              </div>
+            </div>
+
             <h2>Add or update account</h2>
             <form id="registry-form" class="registry-form" autocomplete="off">
               <label>
@@ -73,19 +124,6 @@
                 <button class="button secondary" type="button" id="resetFormBtn">Reset</button>
               </div>
             </form>
-            <p id="registry-message" class="registry-message" hidden></p>
-          </section>
-
-          <section class="registry-card">
-            <div class="registry-toolbar">
-              <input id="searchInput" type="search" placeholder="Search by name, email, role, track" />
-              <div class="registry-toolbar-actions">
-                <button class="button secondary" id="exportBtn" type="button">Export JSON</button>
-                <label class="button secondary registry-import-label" for="importInput">Import JSON</label>
-                <input id="importInput" type="file" accept="application/json" />
-                <button class="button secondary" id="clearBtn" type="button">Clear All</button>
-              </div>
-            </div>
 
             <div class="registry-table-wrap">
               <table class="registry-table">
