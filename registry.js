@@ -1,13 +1,10 @@
 (function () {
-  var ADMIN_SESSION_KEY = 'olyquest.registry.adminkey';
-
   var state = {
-    var ADMIN_SESSION_KEY = 'olyquest.registry.adminkey';
+    users: [],
     editingEmail: null,
-    adminKey: sessionStorage.getItem(ADMIN_SESSION_KEY) || '',
+    adminKey: '',
   };
 
-      adminKey: sessionStorage.getItem(ADMIN_SESSION_KEY) || '',
   var refs = {
     publicRegisterForm: document.getElementById('public-register-form'),
     publicFullName: document.getElementById('publicFullName'),
@@ -16,7 +13,6 @@
     publicTrack: document.getElementById('publicTrack'),
     publicMessage: document.getElementById('public-register-message'),
     adminAuthForm: document.getElementById('admin-auth-form'),
-      publicMessage: document.getElementById('public-register-message'),
     adminKeyInput: document.getElementById('adminKeyInput'),
     logoutAdminBtn: document.getElementById('logoutAdminBtn'),
     adminPanel: document.getElementById('admin-registry-panel'),
@@ -188,13 +184,11 @@
 
     try {
       await apiFetch('/api/registry-auth', { method: 'POST' }, true);
-      sessionStorage.setItem(ADMIN_SESSION_KEY, state.adminKey);
       refs.adminPanel.hidden = false;
       await loadUsers();
       showMessage('Admin access granted.', 'success');
     } catch (error) {
       state.adminKey = '';
-      sessionStorage.removeItem(ADMIN_SESSION_KEY);
       refs.adminPanel.hidden = true;
       showMessage(error.message || 'Admin unlock failed.', 'error');
     }
@@ -202,7 +196,6 @@
 
   function lockAdmin() {
     state.adminKey = '';
-    sessionStorage.removeItem(ADMIN_SESSION_KEY);
     refs.adminPanel.hidden = true;
     state.users = [];
     renderTable();
@@ -392,23 +385,6 @@
     }
   }
 
-  async function initAdminFromSession() {
-    if (!state.adminKey) {
-      renderTable();
-      return;
-    }
-
-    refs.adminKeyInput.value = state.adminKey;
-    try {
-      await apiFetch('/api/registry-auth', { method: 'POST' }, true);
-      refs.adminPanel.hidden = false;
-      await loadUsers();
-      showMessage('Admin session restored.', 'info');
-    } catch (error) {
-      lockAdmin();
-    }
-  }
-
   function init() {
     renderTable();
 
@@ -425,8 +401,6 @@
     refs.exportBtn.addEventListener('click', exportRegistry);
     refs.importInput.addEventListener('change', importRegistryFile);
     refs.clearBtn.addEventListener('click', clearRegistry);
-
-    initAdminFromSession();
   }
 
   init();
