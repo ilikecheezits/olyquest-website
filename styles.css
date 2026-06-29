@@ -545,6 +545,27 @@ nav a {
   gap: 22px;
 }
 
+.program-grid-wider {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: calc(100% + 48px);
+  max-width: none;
+  gap: 24px;
+  margin: 0 -24px;
+}
+
+.program-grid-wider .program-card {
+  padding: 18px;
+}
+
+.program-grid-wider .program-card h3 {
+  font-size: 1rem;
+}
+
+.program-grid-wider .program-card li {
+  font-size: 0.94rem;
+  line-height: 1.52;
+}
+
 .program-card,
 .pillar-card,
 .team-card,
@@ -794,6 +815,37 @@ nav a {
   line-height: 1;
 }
 
+.signup-layout {
+  display: grid;
+  gap: 24px;
+}
+
+.signup-placeholder-link {
+  font-size: 0.95rem;
+}
+
+.signup-placeholder-link a {
+  color: var(--primary);
+  font-weight: 600;
+  word-break: break-all;
+}
+
+.signup-embed-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: none;
+  padding: 10px;
+}
+
+.signup-embed-card iframe {
+  width: 100%;
+  min-height: 900px;
+  border: 0;
+  border-radius: calc(var(--radius) - 6px);
+  background: var(--surface-alt);
+}
+
 .portal-page {
   min-height: calc(100vh - 140px);
 }
@@ -987,8 +1039,8 @@ nav a {
 }
 
 .cta-section {
-  padding: 64px 0;
-  background: var(--surface);
+  padding: 36px 0;
+  background: transparent;
 }
 
 .cta-box {
@@ -996,10 +1048,28 @@ nav a {
   justify-content: space-between;
   align-items: center;
   gap: 24px;
-  background: linear-gradient(90deg, var(--surface-accent), var(--surface-soft));
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 32px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+}
+
+.cta-box .eyebrow {
+  color: var(--text);
+  letter-spacing: 0.12em;
+  margin-bottom: 6px;
+}
+
+.cta-box h2 {
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.cta-box .button.secondary {
+  background: linear-gradient(180deg, var(--button-blue-start) 0%, var(--button-blue-end) 100%);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .site-footer {
@@ -1082,5 +1152,9 @@ nav a {
   .diagram-placeholder {
     min-height: 300px;
     padding: 24px;
+  }
+
+  .signup-embed-card iframe {
+    min-height: 760px;
   }
 }
